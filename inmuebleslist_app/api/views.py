@@ -1,17 +1,18 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import status,generics,viewsets, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status,generics,viewsets, filters
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 
-from inmuebleslist_app.api.serializers import ComentarioSerializer, EmpresaSerializer, EdificacionSerializer
+from inmuebleslist_app.api.pagination import EdificacionLOPagination, EdificacionPagination
 from inmuebleslist_app.models import Comentario, Empresa, Edificacion
 from inmuebleslist_app.api.permissions import IsAdminOrReadOnly, ComentarioUserOrReadOnly
 from inmuebleslist_app.api.throttling import ComentarioCreateThrottle,ComentarioListThrottle
+from inmuebleslist_app.api.serializers import ComentarioSerializer, EmpresaSerializer, EdificacionSerializer
 
 class UsuarioComentario(generics.ListAPIView):
     
@@ -68,8 +69,9 @@ class ComentarioList(generics.ListCreateAPIView):
 class EdificacionList(generics.ListAPIView):
     queryset = Edificacion.objects.all()
     serializer_class = EdificacionSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    pagination_class = EdificacionPagination
     search_fields = ['direccion','empresa__nombre']
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
 
 class ComentarioDetail(generics.RetrieveUpdateDestroyAPIView):
     
