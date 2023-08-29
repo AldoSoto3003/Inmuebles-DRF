@@ -1,10 +1,25 @@
-version: '3'
+version: '3.7'
 
 services:
+
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: drf-app
     volumes:
-      - .:/code
-    port:
-      - '8000:8000'
+      - .:/drf-app
+    ports:
+      - "8000:8000"
+
+  db:
+    image: postgres
+    restart: always
+    container_name: postgres-drf
+    environment:
+      - POSTGRES_DB=drf-app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./sql/postgres-volume/data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432' 

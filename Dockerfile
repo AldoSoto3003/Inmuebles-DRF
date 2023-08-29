@@ -1,7 +1,11 @@
-FROM python:3.11.3
+FROM python
 
-ENV PYTHONUNBUFFERD 1
-RUN mkdir /CODE
-WORKDIR /CODE
-COPY . /CODE/
+ENV PYTHONBUFFERED 1
+
+RUN mkdir /drf_app
+
+WORKDIR /drf_app
+
+ADD . /drf_app/
+
 RUN pip install -r requirements.txt
